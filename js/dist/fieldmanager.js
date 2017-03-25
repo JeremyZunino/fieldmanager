@@ -16,8 +16,16 @@ var FieldManager = function() {
     this.addType( "ucfirst", {
         format: function( val ) { return val.substr(0,1).toUpperCase() + val.substr(1).toLowerCase(); }
     } );
+
+    this.addType( "required", {
+        test: function( val ) { return val.trim().length > 0; }
+    } );
 };
 
+
+FieldManager.prototype.addType = function( typeName, actions ) {
+    this.types[ typeName ] = new FieldManagerType( this, typeName, actions );
+};
 
 FieldManager.prototype.findElements = function( type ) {
     type = type.toLowerCase().trim();
@@ -37,18 +45,17 @@ FieldManager.prototype.run = function() {
             var element = elements[element_key];
             if( element.tagName && element.tagName.toLowerCase() == "input" ) { // if element is an input
                 // Apply now
-                element.value = type.getFormat( element.value );
+                type.getFormat( element ).getTest( element );
                 // Event application
                 ( function(_type) {
-                    element.addEventListener("input", function() { this.value = _type.getFormat( this.value ) }, false);
+                    element.addEventListener("input", function() {
+                        _type.getFormat( this ) // Format
+                            .getTest( this ); // Test
+                    }, false);
                 } )(type);
             }
         }
     }
-};
-
-FieldManager.prototype.addType = function( typeName, actions ) {
-    this.types[ typeName ] = new FieldManagerType( this, typeName, actions );
 };
 
 
@@ -62,8 +69,15 @@ var FieldManagerType = function( manager, typeName, actions ) {
     this.manager = manager;
     this.type = typeName;
     this.format = actions.format != null ? actions.format : function(val) { return val };
+    this.test   = actions.test   != null ? actions.test   : function(val) { return true };
 };
 
-FieldManagerType.prototype.getFormat = function( val ) {
-    return this.format( val );
+FieldManagerType.prototype.getFormat = function( input ) {
+    input.value = this.format( input.value );
+    return this;
+};
+
+FieldManagerType.prototype.getTest = function( input ) {
+    if( !this.test(input.value) ) input.className = input.className + " alert-danger";
+    else input.className = "form-control";
 };
