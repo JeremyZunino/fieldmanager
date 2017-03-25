@@ -2,9 +2,15 @@
  * Created by jeremyzunino on 25/03/2017.
  */
 
-var FieldManager = function() {
+var FieldManager = function( options ) {
     this.types = new Object();
 
+    // OPTIONS
+    if( options != null ) {
+        if( typeof options.validTest == "function" ) this.onValidTest = options.validTest;
+    }
+
+    // PREDIFINEDS INFORMATIONS
     this.addType( "upper", {
         format: function( val ) { return val.toUpperCase(); }
     } );
@@ -20,6 +26,12 @@ var FieldManager = function() {
     this.addType( "required", {
         test: function( val ) { return val.trim().length > 0; }
     } );
+};
+
+
+FieldManager.prototype.onValidTest = function( valid, input ) {
+    if( valid ) while( input.className.indexOf("alert-danger") > 0 ) input.className = input.className.replace("alert-danger", "");
+    else        input.className = input.className + " alert-danger";
 };
 
 
@@ -78,6 +90,6 @@ FieldManagerType.prototype.getFormat = function( input ) {
 };
 
 FieldManagerType.prototype.getTest = function( input ) {
-    if( !this.test(input.value) ) input.className = input.className + " alert-danger";
-    else input.className = "form-control";
+    this.manager.onValidTest( this.test(input.value), input );
+    return this;
 };
