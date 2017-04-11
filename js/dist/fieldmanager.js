@@ -3,6 +3,7 @@
  */
 
 var FieldManager = function( options ) {
+    var self = this;
     this.types = new Object();
 
     // OPTIONS
@@ -10,7 +11,7 @@ var FieldManager = function( options ) {
         if( typeof options.validTest == "function" ) this.onValidTest = options.validTest;
     }
 
-    // PREDIFINEDS INFORMATIONS
+    // PREDEFINEDS INFORMATIONS
     this.addType( "upper", {
         format: function( val ) { return val.toUpperCase(); }
     } );
@@ -26,12 +27,65 @@ var FieldManager = function( options ) {
     this.addType( "required", {
         test: function( val ) { return val.trim().length > 0; }
     } );
+
+    this.addType( "phone", {
+        format: function( val ) {
+            if( val.trim().charAt(0) == "+" ) {
+                var value = self.max( self.onlyNumber( self.spaceless(val) ), 11 );
+                return "+" + self.autoSeparator( value, [2,4,6,8] );
+            } else {
+                var value = self.max( self.onlyNumber( self.spaceless(val) ), 10 );
+                return self.autoSeparator( value, [1,3,5,7] );
+            }
+        },
+        test: function( val ) {
+            if( val.trim().charAt(0) == "+" ) return self.spaceless(val).length == 12;
+            else                              return self.spaceless(val).length == 10;
+        }
+    } );
+};
+
+
+FieldManager.prototype.spaceless = function( val ) {
+    return val.replace(/ /g, '');
+};
+
+FieldManager.prototype.autoSeparator = function( content, lengths, separator ) {
+    if( separator == null ) separator = " ";
+    var result = "";
+    content = content.trim().replace(/ /g, '');
+    for( var i = 0; i < content.length; i++ ) {
+        result += content.charAt(i);
+        if( i < content.length - 1 && lengths.indexOf(i) > -1 ) result += separator;
+    }
+    return result;
+};
+
+FieldManager.prototype.max = function( value, max ) {
+    return value.substr(0, max);
+};
+
+FieldManager.prototype.onlyNumber = function( value ) {
+    var result = "";
+    for( var i in value ) if( !isNaN(value.charAt(i)) ) result += value.charAt(i).toString();
+    return result;
+    // return value;
 };
 
 
 FieldManager.prototype.onValidTest = function( valid, input ) {
-    if( valid ) while( input.className.indexOf("alert-danger") > 0 ) input.className = input.className.replace("alert-danger", "");
-    else        input.className = input.className + " alert-danger";
+    var self = this;
+    if( valid ) {
+        while( input.className.indexOf("alert-danger") > 0 ) input.className = input.className.replace("alert-danger", "");
+        while( input.className.indexOf("alert-warning") > 0 ) input.className = input.className.replace("alert-warning", "");
+    }
+    else {
+        input.className = input.className + ( self.isRequired(input) ? " alert-danger" : " alert-warning" );
+    }
+};
+
+FieldManager.prototype.        isRequired = function( input ) {
+    return input.hasAttribute('required');
 };
 
 
