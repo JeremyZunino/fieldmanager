@@ -15,24 +15,37 @@
             </div>
         </div>
         <div class="form-group row">
+            <div class="col-md-4 col-md-offset-4 text-center"><strong>Default</strong></div>
+            <div class="col-md-4 text-center"><strong>Required</strong></div>
+        </div>
+        <div class="form-group row">
             <label class="control-label col-md-4" for="upper">data-field-<strong>upper</strong></label>
             <div class="col-md-4"><input type="text" class="form-control" id="upper" value="I love potatoes" data-field-upper /></div>
+            <div class="col-md-4"><input type="text" class="form-control" id="upper-r" value="I love potatoes" data-field-upper required /></div>
         </div>
         <div class="form-group row">
             <label class="control-label col-md-4" for="lower">data-field-<strong>lower</strong></label>
             <div class="col-md-4"><input type="text" class="form-control" id="lower" value="I love potatoes" data-field-lower /></div>
+            <div class="col-md-4"><input type="text" class="form-control" id="lower-r" value="I love potatoes" data-field-lower required /></div>
         </div>
         <div class="form-group row">
             <label class="control-label col-md-4" for="ucfist">data-field-<strong>ucfirst</strong></label>
             <div class="col-md-4"><input type="text" class="form-control" id="ucfist" value="I love potatoes" data-field-ucfirst /></div>
+            <div class="col-md-4"><input type="text" class="form-control" id="ucfist" value="I love potatoes" data-field-ucfirst required /></div>
         </div>
         <div class="form-group row">
             <label class="control-label col-md-4" for="ucfist">required-<strong>required</strong></label>
-            <div class="col-md-4"><input type="text" class="form-control" id="required" value="" data-field-required required /></div>
+            <div class="col-md-4 col-md-offset-4"><input type="text" class="form-control" id="required" value="" data-field-required required /></div>
         </div>
         <div class="form-group row">
-            <label class="control-label col-md-4" for="ucfist">data-field-<strong>phone</strong></label>
-            <div class="col-md-4"><input type="text" class="form-control" id="phone" value="060102030405" data-field-phone required /></div>
+            <label class="control-label col-md-4" for="phone">data-field-<strong>phone</strong></label>
+            <div class="col-md-4"><input type="text" class="form-control" id="phone" value="060102030405" data-field-phone /></div>
+            <div class="col-md-4"><input type="text" class="form-control" id="phone-r" value="060102030405" data-field-phone required /></div>
+        </div>
+        <div class="form-group row">
+            <label class="control-label col-md-4" for="phone2"></label>
+            <div class="col-md-4"><input type="text" class="form-control" id="phone2" value="+3360102030405" data-field-phone /></div>
+            <div class="col-md-4"><input type="text" class="form-control" id="phone2-r" value="+3360102030405" data-field-phone required /></div>
         </div>
     </div>
 </form>
